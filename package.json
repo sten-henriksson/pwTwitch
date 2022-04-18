@@ -1,0 +1,28 @@
+{
+  "name": "pwtwitch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "signup.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stenasd/pwTwitch.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stenasd/pwTwitch/issues"
+  },
+  "homepage": "https://github.com/stenasd/pwTwitch#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "chrome-paths": "^1.0.1",
+    "firefox-location": "^1.0.2",
+    "generate-password": "^1.7.0",
+    "node-random-name": "^1.0.1",
+    "playwright": "^1.21.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.21.0"
+  }
+}
