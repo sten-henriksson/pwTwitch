@@ -8,12 +8,13 @@ const readFileAsync = promisify(fs.readFile)
 let $ = require('cheerio');
 
 async function main() {
-    const browser = await firefox.launchPersistentContext("./session/ffffhdvcxvds", { headless: false });
+    let name = random_name({ random: Math.random, female: true }) + random_name({ random: Math.random, female: true }) + random_name({ random: Math.random, female: true })
+    const browser = await firefox.launchPersistentContext("./session/" + name, { headless: false });
     const page = await browser.newPage();
-    //const twitchPage = await browser.newPage();
-    page.goto('https://app.getmailet.com/guest', { timeout: 0 })
-    browser.newPage()
+    const twitchPage = await browser.newPage();
+    await page.goto('https://app.getmailet.com/guest', { timeout: 0 })
     let cred = creatCredentials(page);
+    cred.name = name;
     try {
         await entertwitchcreds(twitchPage, cred)
     } catch {

@@ -6,13 +6,15 @@ const fs = require('fs');
 const { promisify } = require('util');
 const readFileAsync = promisify(fs.readFile)
 let $ = require('cheerio');
+const prompt = require("prompt-async");
 
 (async () => {
-    const browser = await firefox.launchPersistentContext("./session/ggggqwe123", { headless: true });
+    let name = random_name({ random: Math.random, female: true }) + random_name({ random: Math.random, female: true }) + random_name({ random: Math.random, female: true })
+    const browser = await firefox.launchPersistentContext("./session/" + name, { headless: false });
     const allPages = browser.pages();
-    console.log(allPages.length);
     await allPages[0].goto('https://app.getmailet.com/guest', { timeout: 0 });
     let cred = await creatCredentials(allPages[0]);
+    cred.name = name;
     try {
         await allPages[0].goto('https://twitch.tv', { timeout: 0 });
         await entertwitchcreds(allPages[0], cred);
@@ -22,7 +24,9 @@ let $ = require('cheerio');
         await browser.close()
         return false
     }
-    await delay(10000);
+    prompt.start();
+    const { cap } = await prompt.get(["y/n capatcha"]);
+    await delay(5000)
     try {
         await allPages[0].goto('https://app.getmailet.com/guest', { timeout: 0 });
         let codeWithText = await getAuthCode(allPages[0], { timeout: 0 });
@@ -43,17 +47,15 @@ let $ = require('cheerio');
     b.push(cred)
     a.login = b;
     saveJSON(a)
-    //await browser.close()
+    await browser.close()
 })();
 
 async function getAuthCode(page) {
     //todo click verification lin
     let temp$ = $.load(await page.content())
     let codeWithText = temp$('td').html()
-    console.log(codeWithText);
     codeWithText = codeWithText.replace('<a href="', '')
     codeWithText = codeWithText.replace('">Twitch &lt;no-reply@twitch.tv&gt;</a>', '')
-    console.log(codeWithText);
     return codeWithText
 }
 async function getTwitchEmail(page) {
