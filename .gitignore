@@ -106,3 +106,5 @@ test-results/
 playwright-report/
 
 session
+viewingImg
+errorImg

@@ -21,3 +21,11 @@ TODO for next
 # 04-18
 transported all to firefox and use link to verify account.
 inspect selector to get path to element quick.
+
+# 04-19
+fixed promt to make capatcha and exit smoother
+setup proxies from proxiefish and worked without problems and kept session.
+live test with twitch dashboard worked as intended and conted as viewer
+
+# 04-20
+    viewingimg that show username as png to confirm their watching and what their watching. Error img show with name and not "ass" as name

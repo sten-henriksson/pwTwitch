@@ -1,14 +1,17 @@
-const { firefox } = require('playwright');  // Or 'firefox' or 'webkit'.
+// Or 'firefox' or 'webkit'.
 //bug cant reopen firefox after headfull once only in headless open tab to start code??
-const random_name = require('node-random-name');
-var generator = require('generate-password');
 const fs = require('fs');
 const { promisify } = require('util');
-const readFileAsync = promisify(fs.readFile)
-let $ = require('cheerio');
-
+const readFileAsync = promisify(fs.readFile);
+const { firefox } = require('playwright');
+const prompt = require("prompt-async");
 (async () => {
-    const browser = await firefox.launchPersistentContext("./session/ggggqwe123", {
+    prompt.start();
+    const { arraynr } = await prompt.get(["arraynr"]);
+    let session = await getjson();
+    session = session.login[arraynr].name
+    console.log(session);
+    const browser = await firefox.launchPersistentContext("./session/" + session, {
         headless: true, proxy: {
             server: 'http://45.13.31.218:12554',
             username: "proxyfish154",
@@ -20,13 +23,13 @@ let $ = require('cheerio');
     try {
         await allPages[0].goto('https://twitch.tv/akkeoh', { timeout: 0 });
     } catch {
-        await allPages[0].screenshot({ path: "./errorImg/error___" + "ass" + ".png" });
+        await allPages[0].screenshot({ path: "./errorImg/error___" + session + ".png" });
         console.log("fail");
         await browser.close()
         return false
     }
-    await allPages[0].screenshot({ path: "./errorImg/error___" + "ass1" + ".png" });
     delay(3000)
+    await allPages[0].screenshot({ path: "./viewingImg/" + session + "1.png" });
     try {
         await allPages[0].click('[data-a-target="consent-banner-accept"]')
     } catch {
@@ -37,7 +40,10 @@ let $ = require('cheerio');
     } catch {
         console.log("not p");
     }
-    await allPages[0].screenshot({ path: "./errorImg/error___" + "ass2" + ".png" });
+    await allPages[0].screenshot({ path: "./viewingImg/" + session + "2.png" });
+    prompt.start();
+    const { cap } = await prompt.get(["any key to kill myself"]);
+    await browser.close();
 })();
 
 function getRandomArbitrary(min, max) {
