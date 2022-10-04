@@ -45,3 +45,23 @@ function delay(time) {
         setTimeout(resolve, time)
     });
 }
+
+// client creat socket connecton
+// recive message and send message
+// websocket server connected to webpanel
+function sendBotId(username) {
+
+}
+function watchUser(page, url) {
+
+}
+
+function gotMessage(username) {
+
+}
+function sendChat(page, msg) {
+
+}
+function stopWatching(page) {
+
+}

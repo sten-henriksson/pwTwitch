@@ -29,3 +29,7 @@ live test with twitch dashboard worked as intended and conted as viewer
 
 # 04-20
     viewingimg that show username as png to confirm their watching and what their watching. Error img show with name and not "ass" as name
+
+
+## 22-10-04
+started moving into  connect single bot to websocket that will connect to backend and webpanel to controll and send chats from bots

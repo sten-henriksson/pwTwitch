@@ -21,7 +21,8 @@
     "node-random-name": "^1.0.1",
     "os-utils": "0.0.14",
     "playwright": "^1.21.0",
-    "prompt-async": "^0.9.9"
+    "prompt-async": "^0.9.9",
+    "ws": "^8.9.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.21.0"
