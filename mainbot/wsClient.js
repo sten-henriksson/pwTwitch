@@ -16,17 +16,48 @@ client.on('ping', heartbeat);
 client.on('close', function clear() {
     clearTimeout(this.pingTimeout);
 });
-ws.on('watchUser', function message(data) {
+client.on('message', function message(data) {
+    const payload = JSON.parse(data)
+    if (!payload.action) {
+        console.log("invalid payload");
+        return
+    }
+    if (!payload.data) {
+        console.log("invalid payload");
+        return
+    }
+    switch (payload.action) {
+        case 0:
+            // watch user
+            console.log(payload);
+            break;
+        case 1:
+            // send message
+            console.log(payload);
+            break;
+        case 2:
+            // stop watching
+            console.log(payload);
+            break;
+        default:
+    }
+});
+
+
+/*
+client.on('watchUser', function message(data) {
     console.log('received: %s', data);
 });
-ws.on('sendChat', function message(data) {
+client.on('sendChat', function message(data) {
     console.log('received: %s', data);
 });
-ws.on('stopWatching', function message(data) {
+client.on('stopWatching', function message(data) {
     console.log('received: %s', data);
 });
-ws.on('open', function open() {
+client.on('open', function open() {
+    console.log("client open");
     // ws.send('something');
     // start pupeteer
     // kill pupeteer if ping dont go throu
 });
+*/
