@@ -16,8 +16,7 @@ const interval = setInterval(function ping() {
 
     ws.isAlive = false;
     ws.ping();
-    ws.send(JSON.stringify({ action: 1, data: "data1" }))
-    ws.send(JSON.stringify({ action: 2, data: "data2" }));
+    ws.send(JSON.stringify({ action: 0, data: "shroud" }))
   });
 }, 1000);
 // save sockets to array

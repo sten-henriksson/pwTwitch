@@ -11,11 +11,6 @@ function heartbeat() {
     }, 30000 + 1000);
 }
 // start pupeteer on open
-client.on('open', heartbeat);
-client.on('ping', heartbeat);
-client.on('close', function clear() {
-    clearTimeout(this.pingTimeout);
-});
 client.on('message', function message(data) {
     const payload = JSON.parse(data)
     if (!payload.action) {

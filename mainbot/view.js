@@ -32,11 +32,14 @@ client.on('open', async function open() {
     const allPages = browser.pages();
     const page = allPages[0]
     console.log("starting" + process.env.user);
-
+    client.on('message', function message(data, page) {
+        const payload = JSON.parse(data)
+        messageHandler(payload);
+    });
     console.log("end");
 });
 
-async function messageHandler(data) {
+async function messageHandler(data, page) {
 
     const payload = JSON.parse(data)
     if (!payload.action) {
