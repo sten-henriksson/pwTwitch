@@ -13,10 +13,7 @@ function heartbeat() {
 // start pupeteer on open
 client.on('message', function message(data) {
     const payload = JSON.parse(data)
-    if (!payload.action) {
-        console.log("invalid payload");
-        return
-    }
+    console.log("payload", typeof payload);
     if (!payload.data) {
         console.log("invalid payload");
         return
@@ -37,8 +34,6 @@ client.on('message', function message(data) {
         default:
     }
 });
-
-
 /*
 client.on('watchUser', function message(data) {
     console.log('received: %s', data);
