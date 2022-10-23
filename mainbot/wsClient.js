@@ -1,15 +1,7 @@
 const WebSocket = require('ws')
 const client = new WebSocket("ws:///localhost:8092")
 // add to terminate connection if pupetter hangs up and in every try/catch
-function heartbeat() {
-    // rewrite to work with pupeteer
-    console.log("ping");
-    clearTimeout(this.pingTimeout);
-    this.pingTimeout = setTimeout(() => {
-        this.terminate();
-        //kill pupeteer 
-    }, 30000 + 1000);
-}
+
 // start pupeteer on open
 client.on('message', function message(data) {
     const payload = JSON.parse(data)

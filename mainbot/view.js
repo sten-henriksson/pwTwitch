@@ -23,18 +23,19 @@ let browser
 
 client.on('open', async function open() {
     alive = true;
-    browser = await firefox.launchPersistentContext("./session/testsession"/* + process.env.user, {
-        headless: true, proxy: {
-            server: process.env.proxy
-        }
-    }*/);
+    browser = await firefox.launchPersistentContext(getRandomArbitrary(400, 120000).toString(), {
+        headless: true
+    });
 
     const allPages = browser.pages();
-    const page = allPages[0]
     console.log("starting" + process.env.user);
-    client.on('message', function message(data, page) {
-        const payload = JSON.parse(data)
-        messageHandler(payload);
+    client.on('message', function message(data) {
+        if (browser) {
+            messageHandler(data, allPages[0]);
+        }
+        else {
+            console.log("browser dont start");
+        }
     });
     console.log("end");
 });
@@ -42,11 +43,6 @@ client.on('open', async function open() {
 async function messageHandler(data, page) {
 
     const payload = JSON.parse(data)
-    if (!payload.action) {
-        console.log("invalid payload");
-        return
-    }
-
     if (!payload.data) {
         console.log("invalid payload");
         return
@@ -73,10 +69,11 @@ async function messageHandler(data, page) {
 
         default:
     }
+    await delay(5000)
+    page.screenshot({ path: "./" + getRandomArbitrary(400, 120000).toString() + ".png" });
 }
 
 async function goToTwitchChannel(page, url) {
-
     try {
         await page.goto(url, { timeout: 0 });
         console.log("succses1");
