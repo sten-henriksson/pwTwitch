@@ -9,7 +9,7 @@ let botid = 0;
 function getBots() {
     let arr = []
     botSocketServer.clients.forEach(function each(ws) {
-        arr.push(ws.id)
+        arr.push({ id: ws.id, lastAction: ws.lastAction })
     });
     return arr
 }
@@ -33,14 +33,17 @@ frontendServer.on('connection', function connection(ws) {
         console.log('received: %s', data);
         const payload = JSON.parse(data)
         let soc = getSocketfromID(payload.id);
+        console.log(payload.data);
+        soc.lastAction = payload.data
         // pass socket message to correct bot socke
         soc.send(data);
     });
-    ws.send('something');
+    ws.send(JSON.stringify(getBots()));
 })
-botSocketServer.on('connection', function connection(ws) {
+botSocketServer.on('connection', function connection(ws, req) {
     console.log("connection", botid);
-    ws.id = botid;
+    ws.id = req.socket.remoteAddress + "id:" + botid;
+    ws.lastAction = "directory"
     botid++;
 });
 function getSocketfromID(id) {
