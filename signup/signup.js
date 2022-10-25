@@ -17,14 +17,14 @@ const prompt = require("prompt-async");
     });
     let browser
     if (process.env.proxy) {
-        browser = await firefox.launchPersistentContext("./session/" + name, {
+        browser = await firefox.launchPersistentContext("../session/" + name, {
             headless: false, proxy: {
                 server: process.env.proxy
             }
         });
     }
     else {
-        browser = await firefox.launchPersistentContext("./session/" + name, {
+        browser = await firefox.launchPersistentContext("../session/" + name, {
             headless: false
         });
     }
@@ -77,7 +77,7 @@ async function verifyTwitch(page) {
     codeWithText = temp$(selector).attr('href');
     await page.goto(codeWithText, { timeout: 0 });
     await delay(1000);
-    page.screenshot({ path: "./ass.png" });
+    //page.screenshot({ path: "./ass.png" });
     console.log(codeWithText);
     //#mailbox > div > div > div.col-md-6.ov-h.d_hide > a
     //#mailbox > div > div > div.col-md-6.ov-h.d_hide > a
@@ -147,14 +147,14 @@ async function entertwitchcreds(page, credobj) {
     await delay(2000)
 }
 async function getjson() {
-    const res = await readFileAsync('config.json')
+    const res = await readFileAsync('../config.json')
     user = JSON.parse(res.toString());
     return user
 }
 async function saveJSON(json) {
     const data = JSON.stringify(json);
     // write JSON string to a file
-    fs.writeFile('config.json', data, (err) => {
+    fs.writeFile('../config.json', data, (err) => {
         if (err) {
             throw err;
         }

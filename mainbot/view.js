@@ -5,8 +5,7 @@ const { promisify } = require('util');
 const readFileAsync = promisify(fs.readFile);
 const { firefox } = require('playwright');
 const WebSocket = require('ws')
-const client = new WebSocket("ws:///localhost:8092")
-
+const client = new WebSocket("ws:///217.72.52.82:8092")
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
@@ -23,10 +22,12 @@ let browser
 
 client.on('open', async function open() {
     alive = true;
-    browser = await firefox.launchPersistentContext(getRandomArbitrary(400, 120000).toString(), {
-        headless: true
+    browser = await firefox.launchPersistentContext("./session/" + process.env.user, {
+        headless: true, proxy: {
+            server: process.env.proxy
+        }
     });
-
+    console.log("starting" + process.env.user);
     const allPages = browser.pages();
     console.log("starting" + process.env.user);
     client.on('message', function message(data) {

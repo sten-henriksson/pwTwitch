@@ -42,12 +42,12 @@ async function main() {
 }
 
 async function getjson() {
-    const res = await readFileAsync('config.json')
+    const res = await readFileAsync('../config.json')
     user = JSON.parse(res.toString());
     return user
 }
 async function getproxies() {
-    const res = await readFileAsync('proxies.json')
+    const res = await readFileAsync('../proxies.json')
     user = JSON.parse(res.toString());
     return user
 }
