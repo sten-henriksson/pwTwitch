@@ -21,10 +21,9 @@
     "node-random-name": "^1.0.1",
     "os-utils": "0.0.14",
     "playwright": "^1.21.0",
-    "pm2": "^5.2.2",
     "prompt-async": "^0.9.9",
-    "unique-names-generator": "^4.7.1",
-    "ws": "^8.9.0"
+    "ws": "^8.9.0",
+    "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.21.0"

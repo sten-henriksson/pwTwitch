@@ -6,7 +6,11 @@ const readFileAsync = promisify(fs.readFile);
 const { firefox } = require('playwright');
 (async () => {
     //const browser = await firefox.launchPersistentContext("./session/" + "rejag62184");
-    const browser = await firefox.launchPersistentContext("./session/" + "rejag62184", { headless: false });
+    const browser = await firefox.launchPersistentContext("../session/" + "fuchsiarural2", {
+       headless: false //, proxy: {
+           // server: "154.53.82.109:8800"
+        //}
+    });
     const allPages = browser.pages();
     console.log("starting" + process.env.user);
     /*
@@ -20,7 +24,6 @@ const { firefox } = require('playwright');
     }
     console.log("succses2");
     delay(3000)
-
     try {
         await allPages[0].click('[data-a-target="consent-banner-accept"]')
     } catch {
