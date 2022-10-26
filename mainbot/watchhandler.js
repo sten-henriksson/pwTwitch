@@ -10,19 +10,25 @@ var spawn = require('child_process').spawn;
 const prompt = require("prompt-async");
 var os = require('os-utils');
 main()
+
 async function main() {
-    prompt.start();
-    const { arraynr } = await prompt.get(["arraynr"]);
     let session = await getjson();
     session = session.login
     let proxies = await getproxies();
     proxies = proxies.proxies
-    let arraystart = parseInt(arraynr);
-    let arrayend = arraystart + 1
-    let accountToGet = arraystart
-    accountToGet++;
-    accountToGet = accountToGet * 2;
-    console.log(arraystart + " " + arrayend);
+    let acc = 0
+    for (let proxy = 0; proxy < process.env.BOTS; proxy++) {
+        let ip = proxies[proxy]
+        let bot1 = spawn('node', ['view.js'], { env: { user: session[acc].name, proxy: ip } });
+        acc++;
+        await delay(1500)
+        let bot2 = spawn('node', ['view.js'], { env: { user: session[acc].name, proxy: ip } });
+        bot1.stdout.pipe(process.stdout);
+        bot2.stdout.pipe(process.stdout);
+        acc++
+        await delay(1100)
+    }
+    /*
     while (arraystart <= arrayend) {
         //if array start = 0 proxielenght is 1 and 2
         // array start = 3 start array is 8
@@ -36,9 +42,8 @@ async function main() {
         arraystart++;
         a.stdout.pipe(process.stdout);
         b.stdout.pipe(process.stdout);
-        await delay(11000000)
-        break;
-    }
+        await delay(1100)
+    }*/
 }
 
 async function getjson() {

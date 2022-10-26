@@ -6,6 +6,24 @@ const WebSocket = require('ws')
 const frontendServer = new WebSocket.Server({ port: 8093 })
 const botSocketServer = new WebSocket.Server({ port: 8092 })
 let botid = 0;
+
+function heartbeat() {
+    this.isAlive = true;
+}
+const interval = setInterval(function ping() {
+    botSocketServer.clients.forEach(function each(ws) {
+        if (ws.isAlive === false) return ws.terminate();
+
+        ws.isAlive = false;
+        ws.ping();
+    });
+}, 30000);
+
+botSocketServer.on('close', function close() {
+    clearInterval(interval);
+});
+
+
 function getBots() {
     let arr = []
     botSocketServer.clients.forEach(function each(ws) {
@@ -45,6 +63,8 @@ botSocketServer.on('connection', function connection(ws, req) {
     ws.id = req.socket.remoteAddress + "id:" + botid;
     ws.lastAction = "directory"
     botid++;
+    ws.isAlive = true;
+    ws.on('pong', heartbeat);
 });
 function getSocketfromID(id) {
     let socket

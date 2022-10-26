@@ -45,3 +45,5 @@ const App = () => {
 
   return(<p>Press ESC to console log "Close"</p>);
 }
+
+$env:BOTS="2"

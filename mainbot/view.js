@@ -6,6 +6,23 @@ const readFileAsync = promisify(fs.readFile);
 const { firefox } = require('playwright');
 const WebSocket = require('ws')
 const client = new WebSocket("ws:///217.72.52.82:8092")
+
+function heartbeat() {
+    console.log("pong");
+    clearTimeout(client.pingTimeout);
+    client.pingTimeout = setTimeout(() => {
+        client.terminate();
+    }, 30000 + 1000);
+}
+// start pupeteer on open
+client.on('open', heartbeat);
+client.on('ping', heartbeat);
+client.on('close', function clear() {
+    clearTimeout(client.pingTimeout);
+});
+
+
+
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
@@ -21,15 +38,15 @@ let alive = false;
 let browser
 
 client.on('open', async function open() {
+
     alive = true;
-    browser = await firefox.launchPersistentContext("./session/" + process.env.user, {
+    browser = await firefox.launchPersistentContext("../session/" + process.env.user, {
         headless: true, proxy: {
             server: process.env.proxy
         }
     });
     console.log("starting" + process.env.user);
     const allPages = browser.pages();
-    console.log("starting" + process.env.user);
     client.on('message', function message(data) {
         if (browser) {
             messageHandler(data, allPages[0]);
@@ -38,7 +55,6 @@ client.on('open', async function open() {
             console.log("browser dont start");
         }
     });
-    console.log("end");
 });
 
 async function messageHandler(data, page) {
@@ -53,33 +69,33 @@ async function messageHandler(data, page) {
 
         case 0:
             // watch user
-            console.log(payload);
+            console.log(payload + process.env.user);
             goToTwitchChannel(page, "https://www.twitch.tv/" + payload.data)
             break;
 
         case 1:
             // send message
-            console.log(payload);
+            console.log(payload + process.env.user);
             break;
 
         case 2:
             // stop watching
             goToTwitchChannel(page, "https://www.twitch.tv/directory")
-            console.log(payload);
+            console.log(payload + process.env.user);
             break;
 
         default:
     }
-    await delay(5000)
-    page.screenshot({ path: "./" + getRandomArbitrary(400, 120000).toString() + ".png" });
+    await delay(90000)
+    page.screenshot({ path: "./" + process.env.user + ".png" });
 }
 
 async function goToTwitchChannel(page, url) {
     try {
-        await page.goto(url, { timeout: 0 });
-        console.log("succses1");
+        await page.goto(url, { timeout: 90000 });
+        console.log("succses1" + process.env.user);
     } catch {
-        console.log("fail");
+        console.log("fail" + process.env.proxy + " " + process.env.user);
         await browser.close()
         return false
     }
@@ -90,14 +106,13 @@ async function goToTwitchChannel(page, url) {
     try {
         await page.click('[data-a-target="consent-banner-accept"]')
     } catch {
-        console.log("cookie already clicked or glithced");
+        console.log("cookie already clicked or glithced" + process.env.user);
     }
 
     try {
         await page.click('[data-a-target="player-overlay-play-button"]')
     } catch {
-        console.log("not p");
+        console.log("not p" + process.env.user);
     }
-
 }
 

@@ -9,9 +9,9 @@ let $ = require('cheerio');
 const prompt = require("prompt-async");
 
 (async () => {
-    const numberDictionary = NumberDictionary.generate({ min: 100, max: 999 });
+    const numberDictionary = NumberDictionary.generate({ min: 10, max: 99 });
     let name = uniqueNamesGenerator({
-        dictionaries: [colors, adjectives, numberDictionary], // colors can be omitted here as not used
+        dictionaries: [animals, adjectives, numberDictionary], // colors can be omitted here as not used
         separator: '',
         length: 3
     });
@@ -44,8 +44,9 @@ const prompt = require("prompt-async");
     //prompt.start();
     //const { cap } = await prompt.get(["y/n capatcha"]);
     await delay(5000)
+    let verf = false
     try {
-        await verifyTwitch(allPages[0])
+        verf = await verifyTwitch(allPages[0])
     } catch {
         await allPages[0].screenshot({ path: "./errorImg/error___" + cred.name + ".png" });
         console.log("prob capatcha");
@@ -58,7 +59,12 @@ const prompt = require("prompt-async");
     console.log(cred);
     b.push(cred)
     a.login = b;
+    if(verf){
+
+    }
     saveJSON(a)
+    await delay(20000)
+    await allPages[0].screenshot({ path: "./errorImg/error___" + cred.name + ".png" });
     await browser.close()
 })();
 
@@ -79,6 +85,7 @@ async function verifyTwitch(page) {
     await delay(1000);
     //page.screenshot({ path: "./ass.png" });
     console.log(codeWithText);
+    return codeWithText
     //#mailbox > div > div > div.col-md-6.ov-h.d_hide > a
     //#mailbox > div > div > div.col-md-6.ov-h.d_hide > a
 }

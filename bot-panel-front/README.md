@@ -6,3 +6,6 @@ post_startWatching()
 # backend
 post and gets
 socket connection with bots
+
+
+remove everything thats not selected before adding new data
