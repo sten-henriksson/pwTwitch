@@ -8,25 +8,35 @@ const { promisify } = require('util');
 const readFileAsync = promisify(fs.readFile);
 var spawn = require('child_process').spawn;
 const prompt = require("prompt-async");
+const EventEmitter = require('node:events');
 var os = require('os-utils');
+const emitter = new EventEmitter();
 main()
-
 async function main() {
     let session = await getjson();
     session = session.login
     let proxies = await getproxies();
     proxies = proxies.proxies
-    let acc = 0
-    for (let proxy = 0; proxy < process.env.BOTS; proxy++) {
+    let acc = process.env.START * 2
+    for (let proxy = process.env.START; proxy < process.env.BOTS; proxy++) {
+        process.setMaxListeners(25);
+        emitter.setMaxListeners(25)
         let ip = proxies[proxy]
         let bot1 = spawn('node', ['view.js'], { env: { user: session[acc].name, proxy: ip } });
+        console.log("ac", acc);
         acc++;
-        await delay(1500)
+        await delay(500)
         let bot2 = spawn('node', ['view.js'], { env: { user: session[acc].name, proxy: ip } });
+        bot1.setMaxListeners(50)
+        console.log(bot1.getMaxListeners())
+        bot2.setMaxListeners(50)
+        console.log(bot2.getMaxListeners())
         bot1.stdout.pipe(process.stdout);
+        await delay(500)
         bot2.stdout.pipe(process.stdout);
+        console.log("ac", acc);
         acc++
-        await delay(1100)
+        await delay(500)
     }
     /*
     while (arraystart <= arrayend) {

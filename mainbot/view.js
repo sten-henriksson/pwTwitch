@@ -5,21 +5,22 @@ const { promisify } = require('util');
 const readFileAsync = promisify(fs.readFile);
 const { firefox } = require('playwright');
 const WebSocket = require('ws')
+const EventEmitter = require('node:events');
 const client = new WebSocket("ws:///217.72.52.82:8092")
-
+const emitter = new EventEmitter();
+process.setMaxListeners(25);
+emitter.setMaxListeners(25)
 function heartbeat() {
-    console.log("pong");
+   
     clearTimeout(client.pingTimeout);
     client.pingTimeout = setTimeout(() => {
+        console.log("socket lost conn");
+        console.log("lost socket conn terminating socket");
         client.terminate();
-    }, 30000 + 1000);
+    }, 1800000 + 100000);
 }
 // start pupeteer on open
-client.on('open', heartbeat);
-client.on('ping', heartbeat);
-client.on('close', function clear() {
-    clearTimeout(client.pingTimeout);
-});
+
 
 
 
@@ -40,23 +41,34 @@ let browser
 client.on('open', async function open() {
 
     alive = true;
-    browser = await firefox.launchPersistentContext("../session/" + process.env.user, {
-        headless: true, proxy: {
-            server: process.env.proxy
-        }
-    });
     console.log("starting" + process.env.user);
-    const allPages = browser.pages();
-    client.on('message', function message(data) {
+    client.on('open', heartbeat);
+    client.on('ping', heartbeat);
+    client.on('close', function clear() {
+        clearTimeout(client.pingTimeout);
+    });
+    client.on('message', async function message(data) {
+        console.log("browser", browser);
+        if (!browser) {
+            try {
+                browser = await firefox.launchPersistentContext("../session/" + process.env.user, {
+                    headless: true, proxy: {
+                        server: process.env.proxy
+                    }, viewport: { width: 548, height: 480 }, isMobile: true
+                });
+            } catch (error) {
+                console.log(process.env.user, error);
+            }
+        }
         if (browser) {
+            const allPages = browser.pages();
             messageHandler(data, allPages[0]);
         }
         else {
-            console.log("browser dont start");
+            console.log("fail at message handler");
         }
     });
 });
-
 async function messageHandler(data, page) {
 
     const payload = JSON.parse(data)
@@ -70,7 +82,10 @@ async function messageHandler(data, page) {
         case 0:
             // watch user
             console.log(payload + process.env.user);
-            goToTwitchChannel(page, "https://www.twitch.tv/" + payload.data)
+            let a = goToTwitchChannel(page, "https://www.twitch.tv/" + payload.data)
+            if (a == false) {
+                return
+            }
             break;
 
         case 1:
@@ -87,21 +102,31 @@ async function messageHandler(data, page) {
         default:
     }
     await delay(90000)
-    page.screenshot({ path: "./" + process.env.user + ".png" });
+    console.log("screenshot");
+    try {
+        page.screenshot({ path: "./errorImg/" + process.env.user + ".png" });
+    } catch (error) {
+        console.log("oopsie no printscreen");
+    }
 }
 
 async function goToTwitchChannel(page, url) {
+    if (url == "https://www.twitch.tv/directory") {
+        browser.close()
+        browser = false;
+        return
+    }
     try {
         await page.goto(url, { timeout: 90000 });
-        console.log("succses1" + process.env.user);
+        console.log("succses1 " + process.env.user);
     } catch {
-        console.log("fail" + process.env.proxy + " " + process.env.user);
+        console.log("fail " + process.env.proxy + " " + process.env.user);
         await browser.close()
         return false
     }
 
-    console.log("succses2");
-    delay(3000)
+
+    delay(9900)
 
     try {
         await page.click('[data-a-target="consent-banner-accept"]')
@@ -112,7 +137,35 @@ async function goToTwitchChannel(page, url) {
     try {
         await page.click('[data-a-target="player-overlay-play-button"]')
     } catch {
-        console.log("not p" + process.env.user);
+        console.log("no press play needed " + process.env.user);
     }
+    try {
+        await matureAudiance(page)
+    } catch (error) {
+        console.log("no mature audic");
+    }
+    await setQuality(page)
 }
 
+async function matureAudiance(page) {
+    try {
+        await page.click(".knaoBk > button:nth-child(1) > div:nth-child(1) > div:nth-child(1)")
+    } catch (error) {
+
+    }
+}
+async function setQuality(page) {
+    let noerror = false
+    try {
+        await page.hover("div.bzHxJi:nth-child(4) > div:nth-child(1) > section:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > button:nth-child(1)")
+        await page.click('div.bzHxJi:nth-child(4) > div:nth-child(1) > section:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > button:nth-child(1)')
+        await delay(900)
+        await page.click('div.VqjQw:nth-child(3) > button:nth-child(1)')
+        await delay(900)
+        await page.click('div.Layout-sc-nxg1ff-0:nth-child(9) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > label:nth-child(2)')
+        console.log("set quality");
+    } catch (error) {
+        console.log("failed setQuality");
+        page.screenshot({ path: "./errorImg/" + process.env.user + ".png" });
+    }
+}

@@ -46,4 +46,11 @@ const App = () => {
   return(<p>Press ESC to console log "Close"</p>);
 }
 
-$env:BOTS="2"
+ $env:START="0"; $env:BOTS="3";cd  C:\Users\21562\Documents\pwTwitch\mainbot\; node C:\Users\21562\Documents\pwTwitch\mainbot\watchhandler.js
+ $env:START="3"; $env:BOTS="8"; cd C:\Users\21562\Documents\pwTwitch\mainbot\; node C:\Users\21562\Documents\pwTwitch\mainbot\watchhandler.js
+
+tiktok need gmail acc
+youtube need gmail acc
+
+creat signup loop that creats gmail tiktok and twitch
+to avoid phonenumber use 4g
