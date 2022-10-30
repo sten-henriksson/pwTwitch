@@ -6,7 +6,7 @@ const Home: NextPage = () => {
   //hotkey shift  ctrl
   //backend will store last action
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket("ws:///localhost:8093");
+  const { sendMessage, lastMessage, readyState } = useWebSocket("ws:///217.72.52.82:8093");
   const [bots, setBots] = useImmer<listElem[]>([]);
   const [inputValue, setInputValue] = useState("");
   function sendTask() {
