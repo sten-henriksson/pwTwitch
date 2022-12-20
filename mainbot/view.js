@@ -6,7 +6,7 @@ const readFileAsync = promisify(fs.readFile);
 const { firefox } = require('playwright');
 const WebSocket = require('ws')
 const EventEmitter = require('node:events');
-const client = new WebSocket("ws:///217.72.52.82:8092")
+const client = new WebSocket("ws:///217.72.52.110:8092")
 const emitter = new EventEmitter();
 process.setMaxListeners(25);
 emitter.setMaxListeners(25)
@@ -115,6 +115,12 @@ async function goToTwitchChannel(page, url) {
         browser.close()
         browser = false;
         return
+    }
+    if (url == "https://www.twitch.tv/kms") {
+        
+        await browser.close()
+        client.terminate();
+        process.exit()
     }
     try {
         await page.goto(url, { timeout: 90000 });

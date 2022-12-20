@@ -2,7 +2,10 @@
   "name": "pwtwitch",
   "version": "1.0.0",
   "main": "signup.js",
-  "scripts": {},
+  "scripts": {
+    "bot1": "set START=0&&set BOTS=3&&node watchhandler.js",
+    "bot2": "set START=3&&set BOTS=8&&node watchhandler.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stenasd/pwTwitch.git"

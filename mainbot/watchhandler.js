@@ -11,14 +11,26 @@ const prompt = require("prompt-async");
 const EventEmitter = require('node:events');
 var os = require('os-utils');
 const emitter = new EventEmitter();
-main()
+const start = process.env.START
+const end = process.env.BOTS;
+
+
+(async () => {
+    try {
+        await main()
+    } catch (error) {
+        console.log(error);
+    }
+})();
+
 async function main() {
+    console.log("start");
     let session = await getjson();
     session = session.login
     let proxies = await getproxies();
     proxies = proxies.proxies
     let acc = process.env.START * 2
-    for (let proxy = process.env.START; proxy < process.env.BOTS; proxy++) {
+    for (let proxy = start; proxy < end; proxy++) {
         process.setMaxListeners(25);
         emitter.setMaxListeners(25)
         let ip = proxies[proxy]
@@ -38,6 +50,7 @@ async function main() {
         acc++
         await delay(500)
     }
+    console.log("end");
     /*
     while (arraystart <= arrayend) {
         //if array start = 0 proxielenght is 1 and 2
